@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\ADOFunc.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\Log.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\LogMsg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\Prop.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\Util.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\TcpClient.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\PktHandler.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="IocpThread.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AlphaInc.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AlphaProtocolUni.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\IRExcept.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Inc.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\TimeInterval.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="CCsvFile.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CSaveMD.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Main.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\ADOFunc.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\Log.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\LogMsg.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\Prop.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\Util.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\TcpClient.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\PktHandler.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="IocpThread.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AlphaInc.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AlphaProtocolUni.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\IRExcept.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\TimeInterval.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="CCsvFile.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="CSaveMD.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{d68b6ad1-2eda-4c3a-84e9-1b5f88bf813c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{64fce9ad-0480-4531-b786-4e29ef7e6146}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="_Memo.txt">
+      <Filter>Main</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AlphaHFArbi.ini">
+      <Filter>Main</Filter>
+    </None>
+  </ItemGroup>
+</Project>

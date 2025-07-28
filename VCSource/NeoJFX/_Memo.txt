@@ -1,0 +1,10 @@
+
+[TODO]
+# 주문 수신의 경우, main 과 hedge 를 분리해서 관리해야 한다. 
+
+[DONE]
+
+
+[Questions]
+
+# how many candles will be used to calculate rsi, ema and sma?

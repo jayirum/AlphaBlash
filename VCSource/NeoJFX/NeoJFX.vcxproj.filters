@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\ADOFunc.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\Log.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\LogMsg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\Prop.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\Util.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\TcpClient.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\PktHandler.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="IocpThread.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AlphaInc.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AlphaProtocolUni.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\IRExcept.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Inc.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\TimeInterval.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="CStrategyProc.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CMarketTimeHandler.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonAnsi\talibUtils.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="CCandles.cpp">
+      <Filter>Main\Indicators</Filter>
+    </ClCompile>
+    <ClCompile Include="CEma.cpp">
+      <Filter>Main\Indicators</Filter>
+    </ClCompile>
+    <ClCompile Include="CFindWShape.cpp">
+      <Filter>Main\Indicators</Filter>
+    </ClCompile>
+    <ClCompile Include="CComputeSignal.cpp">
+      <Filter>Main\Indicators</Filter>
+    </ClCompile>
+    <ClCompile Include="CFindMShape.cpp">
+      <Filter>Main\Indicators</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Main.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\ADOFunc.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\Log.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\LogMsg.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\Prop.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\Util.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\TcpClient.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\PktHandler.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="IocpThread.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AlphaInc.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AlphaProtocolUni.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\IRExcept.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\TimeInterval.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="CStrategyProc.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="CMarketTimeHandler.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonAnsi\talibUtils.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="CCandles.h">
+      <Filter>Main\Indicators</Filter>
+    </ClInclude>
+    <ClInclude Include="CEma.h">
+      <Filter>Main\Indicators</Filter>
+    </ClInclude>
+    <ClInclude Include="CFindWShape.h">
+      <Filter>Main\Indicators</Filter>
+    </ClInclude>
+    <ClInclude Include="CComputeSignal.h">
+      <Filter>Main\Indicators</Filter>
+    </ClInclude>
+    <ClInclude Include="CFindMShape.h">
+      <Filter>Main\Indicators</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{d68b6ad1-2eda-4c3a-84e9-1b5f88bf813c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{64fce9ad-0480-4531-b786-4e29ef7e6146}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Indicators">
+      <UniqueIdentifier>{e6752fb3-44dc-425b-bc3d-becc8050cce3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NeoJFX.ini">
+      <Filter>Main</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="_Memo.txt">
+      <Filter>Main</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

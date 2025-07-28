@@ -1,0 +1,979 @@
+//+------------------------------------------------------------------+
+//|                                             Sentosa_v1.mq5 |
+//+------------------------------------------------------------------+
+
+#property copyright "Copyright 2023, Irumnet Pte Ltd."
+#property link      "https://www.irumnet.com"
+#property version   "1.00"
+//#property description   "Use the new-non block socket library\n Market Order"
+
+#property strict
+
+
+#include "SentosaCommon.mqh"
+#include "../../include/Alpha/IniFile.mqh";
+#include "../../include/Alpha/socketlib.mqh"
+#include "../../include/Alpha/Protocol.mqh"
+#include "../../include/Alpha/UtilDateTime.mqh"
+#include "../../include/Alpha/OrderFuncMT5.mqh"
+#include "../../include/Alpha/CPacketParser.mqh"
+#include "../../include/Alpha/CommandCodes.mqh"
+
+
+
+input string I_USER_ID = "SENTOSA-1";
+
+
+string   _IniFileName;
+string   _sMsg;
+char     _zMsg[BUF_LEN];
+char     _zRecvBuff[BUF_LEN];
+
+int _nDebug = 0;
+
+
+
+CPacketParser  _parser;
+SOCKET64 _sockAuth=INVALID_SOCKET64;
+SOCKET64 _sockSend=INVALID_SOCKET64;
+SOCKET64 _sockRecv=INVALID_SOCKET64;
+
+
+bool InitSocket(string sSockTp, bool bInit)
+{
+   if(bInit)
+   {
+      char wsaData[]; ArrayResize(wsaData,sizeof(WSAData));
+      int res=WSAStartup(MAKEWORD(2,2), wsaData);
+      if(res!=0) { Print("-WSAStartup failed error: "+string(res)); return false; }
+   }
+   
+   if(sSockTp==DEF_SOCKTP_AUTH || bInit==true)
+   {
+      CloseSocket(sSockTp, false);   
+      _sockAuth=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+      if(_sockAuth==INVALID_SOCKET64) { Print("[E]Failed to create auth socket: "+WSAErrorDescript(WSAGetLastError()));  return false; }
+   }
+
+   if(sSockTp==DEF_SOCKTP_SEND || bInit==true)
+   {
+      CloseSocket(sSockTp, false);
+      _sockSend=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+      if(_sockSend==INVALID_SOCKET64) { Print("[E]Failed to create send socket: "+WSAErrorDescript(WSAGetLastError()));  return false; }
+   }
+   
+   if(sSockTp==DEF_SOCKTP_RECV || bInit==true)
+   {
+      CloseSocket(sSockTp, false);
+      _sockRecv=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+      if(_sockRecv==INVALID_SOCKET64) { Print("[E]Failed to create recv socket: "+WSAErrorDescript(WSAGetLastError())); return false; }
+   }
+
+   return true;
+}
+
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+
+   //__ShowAllSymbols();
+  
+  if( __CheckEAInitCondition(_sMsg)==false)
+   {
+      Alert(_sMsg);
+      Sleep(5000);
+      return 0;
+   }
+   
+    //+----------------------------------------------------------------------------------------
+   //  read config file 
+   //+----------------------------------------------------------------------------------------
+
+   __Ini_GetIniFileFullName(_IniFileName);
+   Print("IniFile : "+_IniFileName);
+   
+   //if( !ReadSymbols_from_IniFile(_IniFileName, _sMsg, _arrMD))
+   //{
+   //   Print(_sMsg);
+   //   return -1;
+   //}
+   
+   string s;
+   if(__Ini_GetVal(_IniFileName, "TIMEOUT_MS", "MD_FETCH", s)==false)
+      return -1;
+   _TIMEOUT_MDFETCH = (int)StringToInteger(s);
+   
+   if(__Ini_GetVal(_IniFileName, "TIMEOUT_MS", "RECONNECT", s)==false)
+      return -1;
+   _TIMEOUT_RECONN = (int)StringToInteger(s);
+   
+   if(__Ini_GetVal(_IniFileName, "ORDER_OPTION", "SLIPPAGE_POINT", s)==false)
+      return -3;
+   _SLIPPAGE_POINT = (int)StringToInteger(s);
+
+   if(__Ini_GetVal(_IniFileName, "ORDER_OPTION", "RETRY_COUNT", s)==false)
+      return -4;
+   _RETRYCNT_ORD = (int)StringToInteger(s);
+   
+   if(__Ini_GetVal(_IniFileName, "ORDER_OPTION", "WAITMINUTES_FOR_CLOSE", s)==false)
+      return -5;
+   _WAITMINUTES_CLOSE = (int)StringToInteger(s);
+
+   if(__Ini_GetVal(_IniFileName, "TRADE_TIME", "TRADE_FROM", _TRADETIME_FROM)==false)
+      return -6;
+
+   if(__Ini_GetVal(_IniFileName, "TRADE_TIME", "TRADE_TO", _TRADETIME_TO)==false)
+      return -7;
+      
+   string sIP, sPort;
+   if(__Ini_GetVal(_IniFileName, "SERVER_INFO", "LOGON_AUTH_IP", sIP)==false)
+      return -8;
+      
+   if(__Ini_GetVal(_IniFileName, "SERVER_INFO", "LOGON_AUTH_PORT", sPort)==false)
+      return -9;
+   
+   _SvrInfo.Ip_Auth = sIP;
+   _SvrInfo.Port_Auth = (ushort)StringToInteger(sPort);
+   
+
+   PrintFormat("Timeout for MD Fetch(%d), Timeout for Reconnect(%d).TRADETIME(%s ~ %s)", _TIMEOUT_MDFETCH, _TIMEOUT_RECONN, _TRADETIME_FROM, _TRADETIME_TO);
+   
+   //+----------------------------------------------------------------------------------------
+   //  Initialize socket library
+   //+----------------------------------------------------------------------------------------
+   if(InitSocket("", true)==false)
+      return -1;
+         
+   __RunEA_Start();
+   
+   
+//--- create timer
+   EventSetMillisecondTimer((int)_TIMEOUT_MDFETCH);
+   
+//---
+   return(INIT_SUCCEEDED);
+  }
+  
+
+//+------------------------------------------------------------------+
+//| Expert deinitialization function                                 |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+//--- destroy timer
+   EventKillTimer();
+
+   //delete _sockSend;
+   //delete _sockRecv;
+   
+   CloseSocket("", true);
+   
+//   string arrSymbols[];
+//   CPosition* PosInfos[];
+//   _mapOpenPos.CopyTo(arrSymbols, PosInfos);
+//   
+//   for( int i=0; i<ArraySize(arrSymbols); i++)
+//   {
+//      CPosition* pos;
+//      if(_mapOpenPos.TryGetValue(arrSymbols[i], pos)){
+//         PrintFormat("[ClearMap]Delete(%d-%s)", i, arrSymbols[i]);
+//         delete pos;
+//      }
+//   }
+//   _mapOpenPos.Clear();
+//   ArrayFree(arrSymbols);
+//   ArrayFree(PosInfos);
+   
+   __RunEA_Stop();
+   
+   Print("OnDeInit...");
+}
+
+
+void CloseSocket(string sSockTp, bool bAll)
+{
+   if(sSockTp==DEF_SOCKTP_SEND || bAll==true)
+   {
+      PrintFormat("Close Send Socket(%d)",_sockSend);
+      shutdown(_sockSend,SD_BOTH);
+      closesocket(_sockSend); _sockSend=INVALID_SOCKET64;
+   }
+   
+   if(sSockTp==DEF_SOCKTP_RECV || bAll==true)
+   {
+      PrintFormat("Close Recv Socket(%d)",_sockRecv);
+      shutdown(_sockRecv,SD_BOTH);
+      closesocket(_sockRecv); _sockRecv=INVALID_SOCKET64;
+   }
+
+   if(sSockTp==DEF_SOCKTP_AUTH || bAll==true)
+   {
+      PrintFormat("Close Auth Socket(%d)",_sockAuth);
+      shutdown(_sockAuth,SD_BOTH);
+      closesocket(_sockAuth); _sockAuth=INVALID_SOCKET64;
+   }
+
+   if(bAll) WSACleanup();
+}
+
+
+
+
+//+------------------------------------------------------------------+
+//| Timer function                                                   |
+//+------------------------------------------------------------------+
+void OnTimer()
+{  
+   if(!__RunEA_IsRunnable()) { return; }
+   
+   if(IsStopped() || !__IsExpertEnabled()) { return; }
+   
+   if(_Admin.Is_Paused())  return;   
+   
+   
+   if( _CURR_STEP==STEP_INIT )
+   {
+      if(!Conn_Login(DEF_SOCKTP_AUTH) ) {__KillEA("[E]Failed to LogonAuth");}
+      
+      UpdateLogonStep(STEP_LOGINAUTH_SENT);
+   }
+   else if( _CURR_STEP==STEP_LOGINAUTH_RECV )
+   {
+      if( !Conn_Login(DEF_SOCKTP_RECV) ) {__KillEA("[E]Failed to LOGON RecvSocket");}
+      
+      UpdateLogonStep(STEP_LOGINRECV_SENT);
+   }
+   else if( _CURR_STEP==STEP_LOGINRECV_RECV )
+   {
+      if( !Conn_Login(DEF_SOCKTP_SEND) ) {__KillEA("[E]Failed to LOGON SendSocket");}
+      
+      UpdateLogonStep(STEP_LOGINSEND_SENT);
+   }
+   else
+   {
+      RecvProc_ByCode();
+   }   
+   
+}
+
+void RecvProc_ByCode()
+{
+   string   sSockTp;
+   SOCKET64 sock;
+   
+   if( _CURR_STEP<STEP_LOGINAUTH_RECV) {
+      sSockTp = DEF_SOCKTP_AUTH;
+      sock = _sockAuth;
+   }
+   else if( _CURR_STEP==STEP_LOGINRECV_RECV || _CURR_STEP==STEP_LOGINSEND_SENT){
+      sSockTp = DEF_SOCKTP_SEND;
+      sock = _sockSend;
+   }
+   else { // STEP_LOGIN_DONE
+      sSockTp = DEF_SOCKTP_RECV;
+      sock = _sockRecv;
+   }
+   EN_RET ret = RecvCommand_FromSvr(sock, sSockTp);
+   if(ret!=RET_OK)
+   {
+      if ((ret==RET_TIMEOUT) && (_CURR_STEP == STEP_LOGIN_DONE)) 
+      { 
+         Send_MarketData(); 
+      }
+      return;
+   }
+
+   while(_parser.Size()>0 )
+   {
+      string sOnePacket;
+      bool bExist = false;
+      _parser.Get_OnePacket(sOnePacket, bExist);
+      if(!bExist) { return; }
+         
+      CProtoUtils util; string sPacketCode = util.PacketCode(sOnePacket);
+
+      if(sPacketCode==CODE_LOGON_AUTH)
+      {
+         if(!Login_Proc(sOnePacket, DEF_SOCKTP_AUTH)) { __KillEA(""); }
+         UpdateLogonStep(STEP_LOGINAUTH_RECV);
+         return;
+      }
+      else if(sPacketCode==CODE_LOGON)
+      {
+         if( _CURR_STEP==STEP_LOGINRECV_SENT )
+         {
+            if(!Login_Proc(sOnePacket, DEF_SOCKTP_RECV)) { __KillEA(""); }
+            UpdateLogonStep(STEP_LOGINRECV_RECV);
+         }
+         else if( _CURR_STEP==STEP_LOGINSEND_SENT )
+         {
+            if(!Login_Proc(sOnePacket, DEF_SOCKTP_SEND)){ __KillEA(""); }
+            UpdateLogonStep(STEP_LOGIN_DONE);
+            Print("Succeeded in LogOn.Ready to Trade");
+         }
+      }
+      else if(sPacketCode==CODE_DUP_LOGON)
+      {
+         string sMsg;
+         util.GetValue(sOnePacket, FDS_MSG, sMsg);
+         Print(sMsg);
+         __KillEA("");
+      }
+      else if(sPacketCode==CODE_COMMAND_BY_CODE)
+      {
+         Excute_ByCommand(sOnePacket);
+      }
+      else 
+      {
+         StringFormat("Wrong Packet(%s)", sPacketCode); ExpertRemove(); return;
+      }
+   }
+}
+
+
+
+void Excute_ByCommand(_In_ string& sOnePacket)
+{
+   string sCommand;
+   CProtoUtils util;
+   if(! util.GetValue(sOnePacket, FDS_COMMAND_CODE, sCommand))
+      return;
+      
+   if( StringSubstr(sCommand, 0, 1)=="1" )
+   {
+      _Admin.Excute_ByAdminCode(sCommand, sOnePacket);
+      return;
+   }
+   
+   if ( sCommand==CMD_MD_SUB || sCommand==CMD_MD_UNSUB)
+   {
+      string sSymbol;
+      if(! util.GetValue(sOnePacket, FDS_SYMBOL, sSymbol)){
+         PrintFormat("SUB MD Packet doesn't have symbol:%s", sOnePacket);
+         return;
+      }
+      if(sCommand==CMD_MD_SUB)   AddSymbol_ForMD(sSymbol);
+      else                       RemoveSymbol_ForMD(sSymbol);
+   }
+   else if ( sCommand==CMD_CLOSE_ALLPOS_DELETE_ALLORD)
+   {}
+}
+
+//void CloseOpenPosition()
+//{
+//   string arrSymbols[];
+//   CPosition* PosInfos[];
+//   _mapOpenPos.CopyTo(arrSymbols, PosInfos);
+//   
+//   for( int i=0; i<ArraySize(arrSymbols)-1; i++)
+//   {
+//      CPosition* pos;
+//      _mapOpenPos.TryGetValue(arrSymbols[i], pos);
+//      if( pos.HasPassedWaitMinutes(_WAITMINUTES_CLOSE) )
+//      {
+//         if(Place_CloseOrder(arrSymbols[i],pos.getTicket(),pos.getVol(),pos.getBuySellTp(),pos.getFillTp()))
+//         {
+//            delete pos;
+//            _mapOpenPos.Remove(arrSymbols[i]);
+//         }
+//      }
+//   }
+//   
+//   
+//   ArrayFree(arrSymbols);
+//   ArrayFree(PosInfos);
+//}
+
+
+
+_Private_ EN_RET RecvCommand_FromSvr(SOCKET64 sock, string sSockTp)
+{
+   uchar FullData[];
+   char recvBuf[512]; int nRecvLen=512; int nAllRecvLen=0; bool bNext=false;
+   int res = 0;
+   while(true)
+   {
+      //if(sSockTp==DEF_SOCKTP_AUTH)        res=recv(_sockAuth,recvBuf,nRecvLen,0);
+      //else if (sSockTp==DEF_SOCKTP_RECV)  res=recv(_sockRecv,recvBuf,nRecvLen,0);
+      //else if (sSockTp==DEF_SOCKTP_SEND)  res=recv(_sockSend,recvBuf,nRecvLen,0);
+      //else {
+      //   __KillEA(StringFormat("[RecvCommand_FromSvr] wrong socket tp:%s", sSockTp));
+      //}
+      
+      res=recv(sock,recvBuf,nRecvLen,0);
+      if(res<0)
+      {
+         int err=WSAGetLastError();
+         if(err==WSAEWOULDBLOCK) { PrintFormat("[%s]Timeout......", sSockTp); Sleep(1000); return RET_TIMEOUT; }
+         else 
+         { 
+            PrintFormat("Receive error(%d)(%s)",err, WSAErrorDescript(err));
+            if(err==WSAECONNRESET || err==WSAENETDOWN || err==WSAENETRESET || err==WSAENOTCONN || err==WSAESHUTDOWN || err==WSAECONNREFUSED)
+               __KillEA("Kill EA on connection issue");
+            return RET_ERR; 
+         }
+            
+      }
+      else if(res==0 && nAllRecvLen==0) { Print("-Receive. connection closed"); return RET_DISCONN ; }
+      else if(res>0) { 
+         nAllRecvLen+=res; 
+         ArrayCopy(FullData,recvBuf,ArraySize(FullData),0,res); 
+         
+      }
+      
+      if(res>=0 && res<nRecvLen) break;
+   }
+
+   if(nAllRecvLen<=0)
+      return RET_ERR;
+      
+   
+   string sFullData = CharArrayToString(FullData);
+   PrintFormat("[RECEIVE][%s](%s)",sSockTp, sFullData);
+   
+   if(_parser.Add_Packet(sFullData)<0)
+   {
+      PrintFormat("[RecvCommand_FromSvr]Packet error!!!");
+      return RET_ERR;
+   }
+
+   //o_nRecvSize = StringLen(o_sRecvPacket);
+   
+   
+ 
+   return RET_OK;  
+}
+
+
+bool Login_Proc(string sOnePack, string sSockTp)
+{
+   int nPackLen = StringLen(sOnePack);
+   string sCode;
+   CProtoGet get;
+   int nFieldCnt = get.ParsingWithHeader(sOnePack, nPackLen);
+   if(nFieldCnt<1)
+   {
+      PrintFormat("[%s]ProtoGet ParsingWithHeader Error(%s)(%s)", sSockTp, get.GetMsg(), sOnePack);         
+      return false;
+   }
+
+   if( !get.GetCode(_Out_ sCode) )
+   {
+      PrintFormat("[%s]ProtoGet GetCode Error(%s)",sSockTp, sCode);
+      return false;
+   }
+
+   if(get.Is_Success()==false)
+   {
+      string sRsltMsg;
+      int nRsltCode = get.Get_RsltCode();
+      get.GetVal(FDS_MSG, sRsltMsg);
+      PrintFormat("[%s]receive error from server(%d)(%s)",sSockTp, nRsltCode, sRsltMsg);
+      return false;
+   }
+   
+   if(sSockTp==DEF_SOCKTP_AUTH)
+   {
+      get.GetVal(FDS_RELAY_IP, _SvrInfo.Ip_Relay);
+      
+      string s;
+      get.GetVal(FDS_RELAY_PORT, s);
+      _SvrInfo.Port_Relay = (ushort)StringToInteger(s);
+      
+      get.GetVal(FDS_KEY, _sAppId);
+
+      PrintFormat("LoginAuth ok. RelayIP(%s) Port(%d), AppId(%s)", _SvrInfo.Ip_Relay, _SvrInfo.Port_Relay, _sAppId);
+   }
+   
+   if(sSockTp==DEF_SOCKTP_RECV)
+   {
+      Print("Login Recvok");
+   }
+   
+   return true;
+}
+
+//
+//bool Open_NewPosition(string sOnePack, int nPackLen, _Out_ ulong& uTicket)
+//{
+//   uTicket = 0;
+//   string sCode;
+//   CProtoGet get;
+//   get.ParsingWithHeader(sOnePack, nPackLen);
+//   {
+//      PrintFormat("ProtoGet ParsingWithHeader Error(%s)(%s)", get.GetMsg(), sOnePack);         
+//      return false;
+//   }
+//
+//   if( !get.GetCode(_Out_ sCode) )
+//   {
+//      PrintFormat("ProtoGet GetCode Error(%s)",sCode);
+//      return false;
+//   }
+//   //PrintFormat("[RecvCommand_FromSvr-3](Code:%s)", sCode);
+//   
+//   if(sCode==CODE_RETURN_ERROR)   //9002
+//   {
+//      CProtoUtils util2;
+//      sCode = util2.GetErrCode(sOnePack);
+//      PrintFormat("[Recv Error Code](%s)(%s)", sCode, sOnePack);
+//      //showErr(_sMsg);
+//      return false;
+//   }
+//   
+//   //PrintFormat("[RecvCommand_FromSvr-4](Before Place_OpenOrder:%s)", sCode);
+//   if( !Place_OpenOrder(get, uTicket) )
+//      return false;
+//
+//   return true;
+//}
+//
+//
+//bool Close_Position(string sOnePack, int nPackLen)
+//{
+//   string sCode;
+//   CProtoGet get;
+//   get.ParsingWithHeader(sOnePack, nPackLen);
+//   {
+//      PrintFormat("ProtoGet ParsingWithHeader Error(%s)(%s)", get.GetMsg(), sOnePack);         
+//      return false;
+//   }
+//
+//   if( !get.GetCode(_Out_ sCode) )
+//   {
+//      PrintFormat("ProtoGet GetCode Error(%s)",sCode);
+//      return false;
+//   }
+//   //PrintFormat("[RecvCommand_FromSvr-3](Code:%s)", sCode);
+//   
+//   if(sCode==CODE_RETURN_ERROR)   //9002
+//   {
+//      CProtoUtils util2;
+//      sCode = util2.GetErrCode(sOnePack);
+//      PrintFormat("[Recv Error Code](%s)(%s)", sCode, sOnePack);
+//      //showErr(_sMsg);
+//      return false;
+//   }
+//
+//
+//   int uTicket = 0;
+//   get.GetVal(FDN_TICKET, uTicket);
+//   
+//   return Place_CloseOrder(uTicket);
+//}
+//
+//
+//bool Place_CloseOrder(ulong uTicket)
+//{
+//   if(!PositionSelectByTicket(uTicket))
+//   {
+//      PrintFormat("Failed to PositionSelectByTicket(%d)-%d", uTicket, GetLastError());
+//      return false;
+//   }
+//
+//
+//   //--- Declare and initialize the trade request and result of trade request
+//   MqlTradeRequest req={};
+//   MqlTradeResult result={};
+//
+//      
+//   //--- Setting the operation params
+//   req.action = TRADE_ACTION_DEAL;
+//   req.position = uTicket;
+//   req.symbol = PositionGetString(POSITION_SYMBOL);
+//   req.volume = PositionGetDouble(POSITION_VOLUME);
+//   req.deviation = _SLIPPAGE_POINT;
+//   
+//   //--- Set the price and order type depending on the position type
+//   if(PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)  {req.type = ORDER_TYPE_SELL;}
+//   else                                                        {req.type = ORDER_TYPE_BUY;}
+//   
+//   ENUM_ORDER_TYPE_FILLING fillTp;
+//   if( !__Fill_OrderType(req.symbol, _Out_ fillTp))
+//   {
+//      Print("[Place_CloseOrder]Fill_OrderType error");
+//      return false;
+//   }
+//   req.type_filling = fillTp; 
+//   
+//   PrintFormat("Before Place CloseOrder(%d)(%s)(Vol:%f)(Bid:%f)(Ask:%f)(Spread:%d)(MDTime:%s)", 
+//   uTicket, req.symbol, req.volume, __GetBid(req.symbol), __GetAsk(req.symbol), __GetSpreadPts(req.symbol), __GetMarketTime_S(req.symbol));
+//   
+//   if( !__PlaceOrderMT5(req,result,_RETRYCNT_ORD, _sMsg) )
+//   { return false; }
+//   
+//   PrintFormat("After Place CloseOrder(%d)", uTicket);
+//   
+//   CPosition* pos;
+//   if(_mapOpenPos.TryGetValue(req.symbol, pos))
+//      delete pos;
+//
+//   return true;
+//}
+//
+//bool Place_OpenOrder(_In_ CProtoGet& get, _Out_ ulong &uTicket)
+//{
+//   string sSymbol;
+//   string sBuySell;
+//   double dRecvPrc= 0;
+//   double dVol= 0;
+//   double dBid=0, dAsk = 0;
+//   
+//   get.GetVal(FDS_SYMBOL, sSymbol);
+//   get.GetVal(FDS_ORD_SIDE, sBuySell);
+//   get.GetVal(FDD_OPEN_PRC, dRecvPrc);
+//   get.GetVal(FDD_LOTS, dVol);
+//
+//   MqlTradeRequest req={};
+//   MqlTradeResult result={};
+//   
+//   req.action     = TRADE_ACTION_DEAL;        // type of trade operation
+//   req.symbol     = sSymbol;
+//   req.volume     = dVol;
+//   //req.price      = __GetCurrPrc(sSymbol, sBuySell) ;
+//   req.deviation  = _SLIPPAGE_POINT;
+//   if(sBuySell==DEF_BUY)   req.type = ORDER_TYPE_BUY;
+//   else                    req.type = ORDER_TYPE_SELL;
+//   
+//   //dBid = __GetCurrPrc(sSymbol,DEF_SIDE_SELL);
+//   //dAsk = __GetCurrPrc(sSymbol,DEF_SIDE_BUY);
+//      
+//   ENUM_ORDER_TYPE_FILLING fillTp;
+//   if( !__Fill_OrderType(sSymbol, _Out_ fillTp))
+//   {
+//      Print("__Fill_OrderType error");
+//      return false;
+//   }
+//   req.type_filling = fillTp; 
+//
+//   //req.stoplimit = ;
+//   //req.sl = 0;
+//   //req.tp = 0;
+//   //req.magic = _uMagicNo;
+//   //req.order = 0;
+//   //req.type_time;
+//   //req.expiration;
+//   //req.comment;
+//   //req.position  = ;          // ticket of the position
+//   //req.position_by;      
+//   
+//   PrintFormat("Before Place OpenOrder(%s)(%s)(Vol:%f)(RecvPrc:%.5f)(OrdPrc:%f)(Bid:%f)(Ask:%f)(Spread:%d)(MDTime:%s)", 
+//      sSymbol, sBuySell, req.volume, dRecvPrc, req.price, __GetBid(sSymbol), __GetAsk(sSymbol), __GetSpreadPts(sSymbol), __GetMarketTime_S(sSymbol));
+//
+//   if( !__PlaceOrderMT5(req,result,_RETRYCNT_ORD, _sMsg) )
+//      return false;
+//   
+//   PrintFormat("After Place OpenOrder(%s)(%s)(Ticket:%d)(RecvPrc:%.5f)(OrdPrc:%f)(Bid:%f)(Ask:%f)(MDTime:%s)", 
+//      sSymbol, sBuySell, result.order, dRecvPrc, req.price, __GetBid(sSymbol), __GetAsk(sSymbol), __GetMarketTime_S(sSymbol));
+//
+//   CPosition* pos = new CPosition(result.order, result.volume, sBuySell, req.type_filling );
+//   _mapOpenPos.Add(sSymbol, pos);
+//   
+//   uTicket = result.order;
+//   
+//   return true;
+//}
+//
+//bool InitSock()
+//{
+//   _sockSend = new ClientSocket(true);
+//   _sockRecv = new ClientSocket(true);
+//   
+//   int nResult = 0;
+//   string sIP, sPort, sRecvTimeout, sSendTimeout, s;
+//   if(__Ini_GetVal(_IniFileName, "SERVER_INFO", "IP", sIP)) nResult++;
+//   if(__Ini_GetVal(_IniFileName, "SERVER_INFO", "PORT", sPort)) nResult++;
+//   if(__Ini_GetVal(_IniFileName, "SERVER_INFO", "SENDTIMEOUT", sSendTimeout)) nResult++;
+//   if(__Ini_GetVal(_IniFileName, "SERVER_INFO", "RECVTIMEOUT", sRecvTimeout)) nResult++;
+//   
+//   if(nResult<4){
+//      showErr("Wrong ini file(%s) info(IP, Port,RETRY_CONN_TIMEOUT)");
+//      return false;
+//   }
+//   
+//   PrintFormat("Server (IP:%s)(Port:%s)(SendTimeOut:%s)(RecvTimeOut:%s)", sIP, sPort,sSendTimeout,sRecvTimeout);
+//   
+//   _sockRecv.Initialize(sIP, (ushort)StringToInteger(sPort), (int)StringToInteger(sSendTimeout), (int)StringToInteger(sRecvTimeout));
+//   _sockSend.Initialize(sIP, (ushort)StringToInteger(sPort), (int)StringToInteger(sSendTimeout), (int)StringToInteger(sRecvTimeout));
+//   
+//   
+//   return true;
+//}
+  
+//
+//bool Is_AlreadyOpened(string sSymbol)
+//{
+//   return _mapOpenPos.ContainsKey(sSymbol);
+//}
+
+bool Is_TradingTime()
+{
+   string sNow = StringSubstr( __TimeToStr_hh_mm_ss(TimeCurrent()), 0, 5);
+   
+   if( StringCompare(_TRADETIME_FROM, sNow)<=0 && StringCompare(sNow, _TRADETIME_TO) <0 )
+      return true; 
+   
+   return false;
+}
+
+void Send_MarketData()
+{
+   if ( _mdInfo.sSymbol=="")
+      return;
+      
+   datetime nNewTime = (datetime) SymbolInfoInteger(_mdInfo.sSymbol, SYMBOL_TIME);
+   if( _mdInfo.time == nNewTime )
+      return;
+      
+   MqlTick tick; SymbolInfoTick(_mdInfo.sSymbol,  tick);
+   
+   _mdInfo.bid = tick.bid;
+   _mdInfo.ask = tick.ask;
+   _mdInfo.spread = __GetSpreadPts(_mdInfo.sSymbol);
+   _mdInfo.time = nNewTime;
+
+   CProtoSet* set = new CProtoSet;
+   set.Begin();
+   set.SetVal(FDS_CODE,       CODE_MARKET_DATA);
+   set.SetVal(FDS_SUCC_YN,    "Y");
+   set.SetVal(FDS_USER_ID,    I_USER_ID);
+   set.SetVal(FDS_KEY,        _sAppId);
+   set.SetVal(FDS_SYMBOL,     _mdInfo.sSymbol);       
+   set.SetVal(FDD_BID,        _mdInfo.bid);
+   set.SetVal(FDD_ASK,        _mdInfo.ask);
+   set.SetVal(FDD_SPREAD,     _mdInfo.spread);
+   set.SetVal(FDS_MARKETDATA_TIME,       __TimeToStr_yyyymmddhhmmss(nNewTime));
+   set.SetVal(FDS_LIVEDEMO,    _LiveDemo);
+   set.SetVal(FDN_DECIMAL,     __GetDigits(_mdInfo.sSymbol));
+   
+   string sendBuf; bool forDelphi=true;
+   int len = set.Complete(sendBuf, !forDelphi);
+   Send2Svr(DEF_SOCKTP_SEND, sendBuf, len, "Send_MarketData", false);   
+   
+   delete set;
+
+}
+
+//
+//
+//bool Send_OpenPosition(ulong uTicket, bool bInit=false)
+//{  
+//
+//   for( int i=PositionsTotal()-1; i>-1; i-- )
+//   {
+//      string symbol = PositionGetSymbol(i);
+//      
+//      //if( PositionGetInteger(POSITION_MAGIC)!=_uMagicNo ){
+//      //   PrintFormat("[%s] MagicNo(%d) is different from MyMagicNo(%d)", symbol, PositionGetInteger(POSITION_MAGIC), _uMagicNo);
+//      //   continue;
+//      //}
+//      
+//      bool bSend = false;
+//      if(bInit)
+//      {
+//         bSend = true;
+//      }
+//      else
+//      {
+//         if(uTicket==PositionGetInteger(POSITION_TICKET))
+//         {
+//            bSend = true;
+//         }
+//         else
+//         {
+//            CPosition* pPos;
+//            if( _mapOpenPos.TryGetValue(symbol, pPos)==true )
+//               continue;
+//         }   
+//      }
+//      
+//      if(!bSend)
+//         continue;
+//         
+//      CProtoSet* set = new CProtoSet;
+//      set.Begin();
+//      set.SetVal(FDS_CODE,       CODE_POSITION);
+//      set.SetVal(FDS_KEY,        _brokerName);
+//      set.SetVal(FDS_SYMBOL,     PositionGetString(POSITION_SYMBOL));       
+//      set.SetVal(FDN_TICKET,     PositionGetInteger(POSITION_TICKET));
+//      set.SetVal(FDD_OPEN_PRC,   PositionGetDouble(POSITION_PRICE_OPEN));
+//      set.SetVal(FDD_LOTS,       PositionGetDouble(POSITION_VOLUME));
+//      
+//      string sBuySell;
+//      if( PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_BUY )
+//         sBuySell = DEF_BUY;
+//      else
+//         sBuySell = DEF_SELL;
+//         
+//      set.SetVal(FDS_ORD_SIDE,  sBuySell);
+//         
+//      string sendBuf;
+//      int len = set.Complete(sendBuf, true);
+//      //Send2Svr(_sockSend, sendBuf, len, "MD_CheckNSend", false);   
+//      if(!Send2Svr(DEF_SOCKTP_SEND, sendBuf, len, "Send_OpenPosition", false))
+//      {
+//         Print("[Send_OpenPosition] Failed to send data");
+//         return false;
+//      }
+//      
+//      PrintFormat("[Position_SEND](%s)", sendBuf);
+//      delete set;
+//      
+//      if(bInit)
+//      {
+//         CPosition* pos = new CPosition(PositionGetInteger(POSITION_TICKET), PositionGetDouble(POSITION_VOLUME), sBuySell, 0 );
+//         _mapOpenPos.Add(symbol, pos);
+//         PrintFormat("AddPosition when Init:%s", symbol);
+//      }
+//   }
+//   return true;
+//}
+//
+
+
+
+//bool Send2Svr(_In_ ClientSocket& sock,  _In_ string& sendBuf, int nSendLen, string sCaller, bool bLog=true)
+bool Send2Svr( string sSockTp, _In_ string& sendBuf, int nSendLen, string sCaller, bool bLog=true)
+{  
+  
+   int nToSend = StringLen(sendBuf);      
+   bool bRetval = true;
+   uchar arr[];
+   StringToCharArray(sendBuf, arr);
+   
+   int res=0;
+   if(sSockTp==DEF_SOCKTP_RECV)        res=send(_sockRecv, arr,nToSend,0);
+   else if(sSockTp==DEF_SOCKTP_SEND)   res=send(_sockSend, arr,nToSend,0);
+   else if(sSockTp==DEF_SOCKTP_AUTH)   res=send(_sockAuth, arr,nToSend,0);
+   
+   if(res==SOCKET_ERROR)
+   { 
+      PrintFormat("[%s] socket Send failed error:%s", sSockTp,WSAErrorDescript(WSAGetLastError())); 
+      return false; 
+   }
+   
+   
+   return true;
+}
+
+
+
+bool ConnectSvr(_In_ SOCKET64& sockConn, _In_ string sSockTp) //  _Private_
+{
+   string sIP     = (sSockTp==DEF_SOCKTP_AUTH)? _SvrInfo.Ip_Auth   : _SvrInfo.Ip_Relay;
+   ushort usPort  = (sSockTp==DEF_SOCKTP_AUTH)? _SvrInfo.Port_Auth : _SvrInfo.Port_Relay;
+   
+   char ch[]; StringToCharArray(sIP,ch);
+   sockaddr_in addrin;
+   addrin.sin_family=AF_INET;
+   addrin.sin_addr.u.S_addr=inet_addr(ch);
+   addrin.sin_port=htons(usPort);
+
+   ref_sockaddr ref; ref.in=addrin;
+   
+   //SOCKET64 sockConn = (sSockTp==DEF_SOCKTP_AUTH)? _sockAuth : ((sSockTp==DEF_SOCKTP_RECV)? _sockRecv:_sockSend);
+   
+   int res=connect(sockConn,ref.ref,sizeof(addrin));
+   if(res==SOCKET_ERROR)
+     {
+      int err=WSAGetLastError();
+      if(err!=WSAEISCONN) { Print("[E]Connect failed error: "+WSAErrorDescript(err)); ; return false; }
+     }
+
+// set to nonblocking mode
+   int non_block=1;
+   res=ioctlsocket(sockConn,(int)FIONBIO,non_block);
+   if(res!=NO_ERROR) { Print("[E]ioctlsocket failed error: "+string(res)); CloseSocket(sSockTp, false); return false; }
+   
+   PrintFormat("[%s][%d]Socket connect ok(IP:%s)(Port:%d)",sSockTp, sockConn,  sIP, usPort);
+   
+   return true;
+}
+
+
+bool ReadSymbols_from_IniFile(_In_ string sIniFileName, _Out_ string& sMsg, _Out_ TMD& arrMD[])
+{
+   string sSymbols;
+   if(__Ini_GetVal(sIniFileName, "SYMBOL", "SYMBOL", sSymbols)==false)
+   {
+      sMsg = StringFormat("[%s]No symbol info in the ini file", sIniFileName);
+      return false;
+   }
+      
+   string arrSymbols[];
+   ushort deli = StringGetCharacter(",",0);
+   int nCnt = StringSplit(sSymbols, deli, arrSymbols);
+
+   ArrayResize(arrMD, nCnt);
+   for( int i=0; i<nCnt; i++ )
+   {
+      if( __ExistSymbol(arrSymbols[i])==false )
+      {
+         PrintFormat("Symbol does NOT exist(%s)", arrSymbols[i]);
+         return false;
+      }
+      
+      arrMD[i].sSymbol = arrSymbols[i];
+   }
+
+   PrintFormat("[%d](%s)", ArraySize(arrMD), sSymbols);
+
+   return true;
+}
+
+
+
+//+----------------------------------------------------------------------------------------
+//  Login
+//+----------------------------------------------------------------------------------------
+bool Conn_Login(string sSockTp)
+{
+   SOCKET64 sockConn;
+   if (sSockTp==DEF_SOCKTP_AUTH) sockConn = _sockAuth ;
+   if (sSockTp==DEF_SOCKTP_RECV) sockConn = _sockRecv; 
+   if (sSockTp==DEF_SOCKTP_SEND) sockConn = _sockSend;
+
+   if(!ConnectSvr(sockConn, sSockTp))
+      return false;
+
+   int nRet = 0;
+   bool bRslt = false;
+
+   string sResultPacket;
+   
+   CProtoSet   set;
+   set.Begin();
+   
+   if(sSockTp==DEF_SOCKTP_AUTH)
+   {
+      set.SetVal(FDS_CODE, CODE_LOGON_AUTH);
+      set.SetVal(FDS_BROKER,  _brokerName);
+      set.SetVal(FDS_ACCNO_MINE,  _AccNo);
+      set.SetVal(FDS_USER_ID,  I_USER_ID);
+      set.SetVal(FDS_USER_PASSWORD,  "1111");
+      set.SetVal(FDS_MAC_ADDR,  "MAC ADDR");
+      set.SetVal(FDS_LIVEDEMO,  _LiveDemo);
+      set.SetVal(FDN_APP_TP, (int)APPTP_EA);
+   }
+   else
+   {
+      set.SetVal(FDS_CODE, CODE_LOGON);
+      set.SetVal(FDS_BROKER,  _brokerName);
+      set.SetVal(FDS_ACCNO_MINE,  _AccNo);
+      set.SetVal(FDS_USER_ID,  I_USER_ID);
+      set.SetVal(FDS_CLIENT_SOCKET_TP, sSockTp);
+      set.SetVal(FDS_KEY,  _sAppId);
+      set.SetVal(FDS_LIVEDEMO,  _LiveDemo);
+      set.SetVal(FDN_APP_TP, (int)APPTP_EA);
+      set.SetVal(FDS_MAC_ADDR, "MAC ADDR");
+   }
+   int nSend = set.Complete(sResultPacket, false);
+
+   bRslt = Send2Svr( sockConn, sSockTp, sResultPacket, nSend, "Conn_Login");
+   PrintFormat("[%s]Sending Login(%s)", sSockTp, sResultPacket);
+   
+   
+   return bRslt;
+}

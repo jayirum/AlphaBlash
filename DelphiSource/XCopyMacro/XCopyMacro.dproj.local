@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899-12-30 00:00:00.000.999,C:\AlphaBlash\DelphiSource\XCopyMacro\XCopyMacro=C:\AlphaBlash\DelphiSource\XCopyMacro\New1</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.081,C:\Users\JAYKIM\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\AlphaBlash\DelphiSource\uMain.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.345,C:\AlphaBlash\DelphiSource\XCopyMacro\uPrcGrid.dfm=C:\AlphaBlash\DelphiSource\XCopyMacro\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.137,C:\AlphaBlash\DelphiSource\XAlphaClient\uPacketParsing.pas=C:\AlphaBlash\DelphiSource\XAlphaClient\uPacketParse.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.523,C:\AlphaBlash\DelphiSource\XCopyMacro\XCopyMacro.dproj=C:\AlphaBlash\DelphiSource\XCopyMacro\XCopy.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.213,C:\AlphaBlash\DelphiSource\XAlphaClient\Unit1.pas=C:\AlphaBlash\DelphiSource\XAlphaClient\uPacketParsing.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.786,C:\AlphaBlash\DelphiSource\XAlphaClient\MastDB.dfm=C:\AlphaBlash\DelphiSource\XAlphaClient\Unit2.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.081,C:\Users\JAYKIM\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\AlphaBlash\DelphiSource\uMain.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.153,C:\AlphaBlash\DelphiSource\XAlphaClient\MastDB.dfm=C:\AlphaBlash\DelphiSource\XAlphaClient\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.867,C:\AlphaBlash\DelphiSource\XAlphaClient\Unit1.pas=C:\AlphaBlash\DelphiSource\XAlphaClient\PacketList.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.878,C:\AlphaBlash\DelphiSource\XAlphaClient\Unit1.pas=C:\AlphaBlash\DelphiSource\XAlphaClient\uMastDB.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.493,C:\AlphaBlash\DelphiSource\XCopyMacro\Unit1.dfm=C:\AlphaBlash\DelphiSource\XCopyMacro\uSettingTS.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.729,C:\AlphaBlash\DelphiSource\XCopyMacro\Unit1.dfm=C:\AlphaBlash\DelphiSource\XCopyMacro\uPos_Manually.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.878,C:\AlphaBlash\DelphiSource\XAlphaClient\Unit1.dfm=C:\AlphaBlash\DelphiSource\XAlphaClient\uMastDB.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.212,C:\Users\JAYKIM\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\AlphaBlash\DelphiSource\XAlphaClient.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.298,C:\AlphaBlash\DelphiSource\XAlphaClient\PacketList.pas=C:\AlphaBlash\DelphiSource\XAlphaClient\uPacketList.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.071,C:\AlphaBlash\DelphiSource\XCopyMacro\Unit1.dfm=C:\AlphaBlash\DelphiSource\XCopyMacro\uSetting.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.041,C:\AlphaBlash\DelphiSource\XCopyMacro\uPickOrdButton.dfm=C:\AlphaBlash\DelphiSource\XCopyMacro\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.459,C:\AlphaBlash\DelphiSource\XAlphaClient\uMastDB.dfm=C:\AlphaBlash\DelphiSource\XAlphaClient\MastDB.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.783,C:\AlphaBlash\DelphiSource\XCopyClient\XAlphaClient.dproj=C:\AlphaBlash\DelphiSource\XCopyClient\XCopyAlpha.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.163,C:\AlphaBlash\DelphiSource\XAlphaClient\uNotify.dfm=C:\AlphaBlash\DelphiSource\XAlphaClient\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.108,C:\AlphaBlash\DelphiSource\XCopyClient\XCopyAlpha.dproj=C:\AlphaBlash\DelphiSource\XCopyClient\XCopy.dproj</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="..\..\DelphiSource"/>
+    <File Path="..\Common"/>
+    <File Path="..\Common\CommonUtils.pas"/>
+    <File Path="..\Common\MTLoggerU.pas"/>
+    <File Path="..\Common\XAlphaPacket.pas"/>
+    <File Path="uMain.pas"/>
+    <File Path="uMain.dfm"/>
+    <File Path="uNotify.pas"/>
+    <File Path="uNotify.dfm"/>
+    <File Path="uCommonDef.pas"/>
+    <File Path="uPickOrdButton.pas"/>
+    <File Path="uPickOrdButton.dfm"/>
+    <File Path="uOrdThrd.pas"/>
+    <File Path="uPacketThrd.pas"/>
+    <File Path="uRecvThrd.pas"/>
+    <File Path="uTickThrd.pas"/>
+    <File Path="uPrcList.pas"/>
+    <File Path="XCopyMacro.manifest"/>
+    <File Path="uPrcGrid.pas"/>
+    <File Path="uPrcGrid.dfm"/>
+    <File Path="XCopyMacro.ini"/>
+    <File Path="uControlSize.pas"/>
+    <File Path="uTrailingStop.pas"/>
+    <File Path="uSettingTS.pas"/>
+    <File Path="uSettingTS.dfm"/>
+    <File Path="uPos_Manually.pas"/>
+    <File Path="uPos_Manually.dfm"/>
+    <File Path="uSignal.pas"/>
+  </ProjectSortOrder>
+</BorlandProject>

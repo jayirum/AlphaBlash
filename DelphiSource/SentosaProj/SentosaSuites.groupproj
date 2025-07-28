@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{8BE5E0E3-18D9-42A8-9FD3-A03B919F8575}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="microclient\MicroClient.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="SentosaSuite_v1\SentosaSuite_v1.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Sample_Legacy\Sample_Legacy.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\AlphaBasket\AlphaBasket.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="MicroClient">
+        <MSBuild Projects="microclient\MicroClient.dproj"/>
+    </Target>
+    <Target Name="MicroClient:Clean">
+        <MSBuild Projects="microclient\MicroClient.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MicroClient:Make">
+        <MSBuild Projects="microclient\MicroClient.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SentosaSuite_v1">
+        <MSBuild Projects="SentosaSuite_v1\SentosaSuite_v1.dproj"/>
+    </Target>
+    <Target Name="SentosaSuite_v1:Clean">
+        <MSBuild Projects="SentosaSuite_v1\SentosaSuite_v1.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SentosaSuite_v1:Make">
+        <MSBuild Projects="SentosaSuite_v1\SentosaSuite_v1.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Sample_Legacy">
+        <MSBuild Projects="Sample_Legacy\Sample_Legacy.dproj"/>
+    </Target>
+    <Target Name="Sample_Legacy:Clean">
+        <MSBuild Projects="Sample_Legacy\Sample_Legacy.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Sample_Legacy:Make">
+        <MSBuild Projects="Sample_Legacy\Sample_Legacy.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="AlphaBasket">
+        <MSBuild Projects="..\AlphaBasket\AlphaBasket.dproj"/>
+    </Target>
+    <Target Name="AlphaBasket:Clean">
+        <MSBuild Projects="..\AlphaBasket\AlphaBasket.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AlphaBasket:Make">
+        <MSBuild Projects="..\AlphaBasket\AlphaBasket.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="MicroClient;SentosaSuite_v1;Sample_Legacy;AlphaBasket"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="MicroClient:Clean;SentosaSuite_v1:Clean;Sample_Legacy:Clean;AlphaBasket:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="MicroClient:Make;SentosaSuite_v1:Make;Sample_Legacy:Make;AlphaBasket:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

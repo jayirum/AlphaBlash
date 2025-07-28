@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899-12-30 00:00:00.000.106,\\Mac\Home\Documents\Embarcadero\Studio\Projects\Project2.dproj=C:\SEO\ODesk\Jay2020\February\AlphaBlash\AlphaBlash.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.872,C:\SEO\ODesk\Jay2020\February\AlphaBlash\Unit1.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmMT4UpdateU.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.966,C:\SEO\ODesk\Jay2020\February\AlphaBlash\Unit1.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdate.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.554,C:\AlphaBlash\DelphiSource\AlphaBlashUp\AlphaBlash.dproj=C:\AlphaBlash\DelphiSource\AlphaBlashUp\AlphaBlashUp.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.301,C:\AlphaBlash\DelphiSource\AlphaBlashUp\fmMainU.dfm=C:\AlphaBlash\DelphiSource\AlphaBlashUp\fmMainUp.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.374,C:\AlphaBlash\DelphiSource\AlphaBlashUp\fmExeUpdateU.pas=</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.400,\\Mac\Home\Documents\Embarcadero\Studio\Projects\Unit3.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmMainU.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.847,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateU.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.847,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.pas=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateU.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.301,C:\AlphaBlash\DelphiSource\AlphaBlashUp\fmMainU.pas=C:\AlphaBlash\DelphiSource\AlphaBlashUp\fmMainUp.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.197,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdate.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.197,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdate.pas=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.pas</Transaction>
+  </Transactions>
+	<ActiveMobileDevice>
+		<NoProfile iOSSimulator="iPhone5"/>
+	</ActiveMobileDevice>
+</BorlandProject>

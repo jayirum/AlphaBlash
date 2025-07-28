@@ -1,0 +1,89 @@
+object Notify: TNotify
+  Left = 0
+  Top = 0
+  Caption = #50508#47548
+  ClientHeight = 175
+  ClientWidth = 236
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object sPanel1: TsPanel
+    Left = 0
+    Top = 0
+    Width = 236
+    Height = 24
+    Align = alTop
+    TabOrder = 0
+    object lblTitle: TsLabel
+      Left = 1
+      Top = 1
+      Width = 234
+      Height = 22
+      Align = alClient
+      Alignment = taCenter
+      Caption = 'lblTitle'
+      ParentFont = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ExplicitWidth = 48
+      ExplicitHeight = 19
+    end
+  end
+  object sPanel2: TsPanel
+    Left = 0
+    Top = 24
+    Width = 236
+    Height = 151
+    Align = alClient
+    TabOrder = 1
+    object lblBody: TsLabel
+      Left = 16
+      Top = 22
+      Width = 201
+      Height = 49
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'lblBody'
+      ParentFont = False
+      WordWrap = True
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+    end
+    object btnClose: TsBitBtn
+      Left = 64
+      Top = 95
+      Width = 97
+      Height = 42
+      Caption = #54869#51064' '#48143' '#45803#44592
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnClick = btnCloseClick
+      OnKeyPress = btnCloseKeyPress
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    OnTimer = Timer1Timer
+    Left = 264
+    Top = 200
+  end
+end

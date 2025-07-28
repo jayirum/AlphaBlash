@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{C74EB101-BD4D-4ECB-A3D0-B987BFDDE7F2}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="XAlphaClient.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\JayTest\JayTest.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="XAlphaClient">
+        <MSBuild Projects="XAlphaClient.dproj"/>
+    </Target>
+    <Target Name="XAlphaClient:Clean">
+        <MSBuild Projects="XAlphaClient.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="XAlphaClient:Make">
+        <MSBuild Projects="XAlphaClient.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="JayTest">
+        <MSBuild Projects="..\JayTest\JayTest.dproj"/>
+    </Target>
+    <Target Name="JayTest:Clean">
+        <MSBuild Projects="..\JayTest\JayTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="JayTest:Make">
+        <MSBuild Projects="..\JayTest\JayTest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="XAlphaClient;JayTest"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="XAlphaClient:Clean;JayTest:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="XAlphaClient:Make;JayTest:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

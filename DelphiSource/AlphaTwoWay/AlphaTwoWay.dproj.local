@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899-12-30 00:00:00.000.400,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmMainU.dfm=\\Mac\Home\Documents\Embarcadero\Studio\Projects\Unit3.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.872,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmMT4UpdateU.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.847,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateU.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.106,C:\SEO\ODesk\Jay2020\February\AlphaBlash\AlphaBlash.dproj=\\Mac\Home\Documents\Embarcadero\Studio\Projects\Project2.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.988,C:\AlphaBlash\DelphiSource\AlphaTwoWay\AlphaTwoWay.dproj=C:\AlphaBlash\DelphiSource\AlphaTwoWay\AlphaBlash.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.966,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdate.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.562,C:\AlphaBlash\DelphiSource\AlphaTwoWay\Unit1.pas=C:\AlphaBlash\DelphiSource\AlphaTwoWay\uCommon.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.980,C:\AlphaBlash\DelphiSource\AlphaTwoWay\Unit1.pas=C:\AlphaBlash\DelphiSource\AlphaTwoWay\uPosGrid.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.197,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.pas=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdate.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.847,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateU.pas=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.197,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdate.dfm</Transaction>
+  </Transactions>
+	<ActiveMobileDevice>
+		<NoProfile iOSSimulator="iPhone5"/>
+	</ActiveMobileDevice>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="..\..\DelphiSource"/>
+    <File Path="..\Common"/>
+    <File Path="..\Common\CommonUtils.pas"/>
+    <File Path="..\Common\CommonVal.pas"/>
+    <File Path="..\Common\MTLoggerU.pas"/>
+    <File Path="..\Common\ProtoGetU.pas"/>
+    <File Path="..\Common\ProtoSetU.pas"/>
+    <File Path="..\Common\uAlphaProtocol.pas"/>
+    <File Path="..\Common\uPostThread.pas"/>
+    <File Path="..\Common\uQueueEx.pas"/>
+    <File Path="AlphaTwoWay.ini"/>
+    <File Path="CheckUpdateThread.pas"/>
+    <File Path="fmExeUpdateU.pas"/>
+    <File Path="fmExeUpdateU.dfm"/>
+    <File Path="fmMainU.pas"/>
+    <File Path="fmMainU.dfm"/>
+    <File Path="fmMT4UpdateU.pas"/>
+    <File Path="fmMT4UpdateU.dfm"/>
+    <File Path="uCtrls.pas"/>
+    <File Path="uLoginProcess.pas"/>
+    <File Path="uMDProcess.pas"/>
+    <File Path="uPacketProcess.pas"/>
+    <File Path="uPosDataProcess.pas"/>
+    <File Path="uRealPLOrder.pas"/>
+    <File Path="uSymbolSpecProcess.pas"/>
+    <File Path="uTwoWayCommon.pas"/>
+    <File Path="version.ini"/>
+  </ProjectSortOrder>
+</BorlandProject>

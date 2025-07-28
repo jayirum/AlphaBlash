@@ -1,0 +1,62 @@
+﻿#############################################
+## 통신할 데이터들
+#############################################
+
+[ 로그인 ]
+
+EA -> AlphaCopyL : 로그인 요청
+(CODE=CODE_LOGON;FDS_BROKER=OANDA;FDS_MASTERCOPIER_TP=M;)
+
+AlphaCopyL -> EA : 응답, 성공/실패. 성공시 Terminal Index 전달
+(CODE=CODE_LOGON;FDS_ERR_YN=Y;FDS_ERR_MSG=EA and AlphaCopyL are unmatched;FDN_ERR_CODE=E_EA_APP_UNMATCHED)
+(CODE=CODE_LOGON;FDS_ERR_YN=Y;FDS_ERR_MSG=패킷의 마스터/카피어 구분이 잘못됐습니다.;FDN_ERR_CODE=E_UNVALIDE_MASTERCOPIER)
+(CODE=CODE_LOGON;FDS_ERR_YN=N;FDS_ERR_MSG=;FDN_ERR_CODE=E_OK;FDN_BROKER_IDX=1)
+
+
+[ 주문 ]
+
+EA (Master) -> AlphaCopyL
+ : Publish 할 주문
+ : iTerminal 이 같이 전달된다.
+(CODE=CODE_MASTER_ORDER;FDN_BROKER_IDX=1;FDS_MASTERCOPIER_TP=M;FDS_MT4_TICKET=123;FDS_MT4_TICKET_CLOSING=123;
+FDS_ORDER_GROUPKEY=123;FDS_MASTER_TICKET=123;FDD_LOTS=0.1;FDD_CLOSE_LOTS=0;FDS_SYMBOL=EURUSD;FDD_SLPRC=1.1234;
+FDD_TPPRC=;FDS_CLOSE_TM=121212;FDS_CLOSE_GMT=001212;FDD_CLOSE_PRC=0;FDN_ORD_ACTION=1;FDS_KEEP_ORGTICKET_YN=N;
+FDS_ORD_POS_TP=1;FDS_OPEN_TM=121212;FDN_ORD_TYPE=2;FDD_OPEN_PRC=1.1234;)
+
+AlphaCopyL -> EAs(Copiers)
+ : Master 주문 전달
+(CODE=CODE_MASTER_ORDER;FDN_BROKER_IDX=1;FDS_MASTERCOPIER_TP=M;FDS_MT4_TICKET=123;FDS_MT4_TICKET_CLOSING=123;
+FDS_ORDER_GROUPKEY=123;FDS_MASTER_TICKET=123;FDD_LOTS=0.1;FDD_CLOSE_LOTS=0;FDS_SYMBOL=EURUSD;FDD_SLPRC=1.1234;
+FDD_TPPRC=;FDS_CLOSE_TM=121212;FDS_CLOSE_GMT=001212;FDD_CLOSE_PRC=0;FDN_ORD_ACTION=1;FDS_KEEP_ORGTICKET_YN=N;
+FDS_ORD_POS_TP=1;FDS_OPEN_TM=121212;FDN_ORD_TYPE=2;FDD_OPEN_PRC=1.1234;)
+
+[ Cfg 저장 ]
+
+AlphaCopyL -> 모든 EA
+(CODE=CODE_CONFIG_SYMBOL;FDN_BROKER_IDX=1;FDS_MASTERCOPIER_TP=M;)
+(CODE=CODE_CONFIG_GENERAL;FDN_BROKER_IDX=1;FDS_MASTERCOPIER_TP=M;)
+
+SYMBOL과 CFG 는 구분한다.
+
+어떤 CFG 이든 저장을 하면 모든 EA 들에게
+MC_TP, iTerminal 과 함께 전달하면
+각 EA 가 판단해서 자신의 데이터이면 INI 파일을 읽는다.
+
+
+[ MASTER / COPIER 변경 ]
+
+AlphaCopyL -> 모든 EA
+(CODE=CODE_RESET_MCTP;FDN_BROKER_IDX=1;FDS_MASTERCOPIER_TP=M;)
+
+
+#######################################################
+## COPIER 로그온 시 이미 있는 MASTER 포지션 처리 원칙
+## MASTER 로그오프 시 거래된 포지션 처리 원칙
+#######################################################
+
+1. MASTER 는 로그온 하면 현재의 모든 포지션과 미체결주문을 로딩한다.
+   - 이 정보는 Alpha 에게 전송하지 않는다.
+2. MASTER 주문은 실시간 주문만 COPIER 에게 전송한다.
+   - 즉, COPIER 는 실시간 주문만 COPY 한다.
+
+

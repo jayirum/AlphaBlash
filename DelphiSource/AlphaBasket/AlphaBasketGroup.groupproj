@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{B00E474D-42A7-4DC4-B39F-15C3AB1F66F6}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="AlphaBasket.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\JayTest\JayTest.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\AlphaBlash\AlphaBlash.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\AlphaCopyL\AlphaCopyL.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="AlphaBasket">
+        <MSBuild Projects="AlphaBasket.dproj"/>
+    </Target>
+    <Target Name="AlphaBasket:Clean">
+        <MSBuild Projects="AlphaBasket.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AlphaBasket:Make">
+        <MSBuild Projects="AlphaBasket.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="JayTest">
+        <MSBuild Projects="..\JayTest\JayTest.dproj"/>
+    </Target>
+    <Target Name="JayTest:Clean">
+        <MSBuild Projects="..\JayTest\JayTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="JayTest:Make">
+        <MSBuild Projects="..\JayTest\JayTest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="AlphaBlash">
+        <MSBuild Projects="..\AlphaBlash\AlphaBlash.dproj"/>
+    </Target>
+    <Target Name="AlphaBlash:Clean">
+        <MSBuild Projects="..\AlphaBlash\AlphaBlash.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AlphaBlash:Make">
+        <MSBuild Projects="..\AlphaBlash\AlphaBlash.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="AlphaCopyL">
+        <MSBuild Projects="..\AlphaCopyL\AlphaCopyL.dproj"/>
+    </Target>
+    <Target Name="AlphaCopyL:Clean">
+        <MSBuild Projects="..\AlphaCopyL\AlphaCopyL.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AlphaCopyL:Make">
+        <MSBuild Projects="..\AlphaCopyL\AlphaCopyL.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="AlphaBasket;JayTest;AlphaBlash;AlphaCopyL"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="AlphaBasket:Clean;JayTest:Clean;AlphaBlash:Clean;AlphaCopyL:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="AlphaBasket:Make;JayTest:Make;AlphaBlash:Make;AlphaCopyL:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

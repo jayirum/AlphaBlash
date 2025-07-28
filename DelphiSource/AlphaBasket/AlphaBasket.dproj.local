@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899-12-30 00:00:00.000.733,C:\AlphaBlash\DelphiSource\AlphaBasket\fmConfig.pas=C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.255,C:\AlphaBlash\DelphiSource\AlphaBasket\fmConfig.pas=</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.847,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateU.pas=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.381,C:\AlphaBlash\DelphiSource\AlphaBasket\uRealPLOrder.pas=</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.973,C:\AlphaBlash\DelphiSource\AlphaBasket\uBasketCommon.pas=C:\AlphaBlash\DelphiSource\AlphaBasket\uTwoWayCommon.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.197,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdate.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.195,C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.dfm=C:\AlphaBlash\DelphiSource\AlphaBasket\uConfig.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.733,C:\AlphaBlash\DelphiSource\AlphaBasket\fmConfig.dfm=C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.513,C:\AlphaBlash\DelphiSource\AlphaBasket\uConfig.dfm=C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.513,C:\AlphaBlash\DelphiSource\AlphaBasket\uConfig.pas=C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.611,=C:\AlphaBlash\DelphiSource\AlphaBasket\symbols.ini</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.078,=C:\AlphaBlash\DelphiSource\AlphaBasket\AlphaBasket.ini</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.847,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateU.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.324,C:\AlphaBlash\DelphiSource\AlphaBasket\uSymbolSpecProcess.pas=</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.724,=C:\AlphaBlash\DelphiSource\AlphaBasket\uDataHandler.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.394,C:\AlphaBlash\DelphiSource\AlphaBasket\AlphaTwoWay.dproj=C:\AlphaBlash\DelphiSource\AlphaBasket\AlphaBasket.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.712,C:\AlphaBlash\DelphiSource\AlphaBasket\uPrcGrid.dfm=C:\AlphaBlash\DelphiSource\AlphaBasket\uConfig.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.022,C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.pas=C:\AlphaBlash\DelphiSource\AlphaBasket\uLoadSymbols.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.195,C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.pas=C:\AlphaBlash\DelphiSource\AlphaBasket\uConfig.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.609,=C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.931,=C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.980,C:\AlphaBlash\DelphiSource\AlphaTwoWay\Unit1.pas=C:\AlphaBlash\DelphiSource\AlphaTwoWay\uPosGrid.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.562,C:\AlphaBlash\DelphiSource\AlphaTwoWay\Unit1.pas=C:\AlphaBlash\DelphiSource\AlphaTwoWay\uCommon.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.400,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmMainU.dfm=\\Mac\Home\Documents\Embarcadero\Studio\Projects\Unit3.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.966,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdate.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.972,=C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.988,C:\AlphaBlash\DelphiSource\AlphaTwoWay\AlphaTwoWay.dproj=C:\AlphaBlash\DelphiSource\AlphaTwoWay\AlphaBlash.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.872,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmMT4UpdateU.dfm=C:\SEO\ODesk\Jay2020\February\AlphaBlash\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.197,C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdateI.pas=C:\SEO\ODesk\Jay2020\February\AlphaBlash\fmExeUpdate.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.106,C:\SEO\ODesk\Jay2020\February\AlphaBlash\AlphaBlash.dproj=\\Mac\Home\Documents\Embarcadero\Studio\Projects\Project2.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.447,=C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.917,=C:\AlphaBlash\DelphiSource\AlphaBasket\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.730,=C:\AlphaBlash\DelphiSource\AlphaBasket\uPrcGrid.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.712,C:\AlphaBlash\DelphiSource\AlphaBasket\uPrcGrid.pas=C:\AlphaBlash\DelphiSource\AlphaBasket\uConfig.pas</Transaction>
+  </Transactions>
+	<ActiveMobileDevice>
+		<NoProfile iOSSimulator="iPhone5"/>
+	</ActiveMobileDevice>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="..\..\DelphiSource"/>
+    <File Path="..\Common"/>
+    <File Path="..\Common\CommonUtils.pas"/>
+    <File Path="..\Common\CommonVal.pas"/>
+    <File Path="..\Common\MTLoggerU.pas"/>
+    <File Path="..\Common\ProtoGetU.pas"/>
+    <File Path="..\Common\ProtoSetU.pas"/>
+    <File Path="..\Common\uAlphaProtocol.pas"/>
+    <File Path="..\Common\uPostThread.pas"/>
+    <File Path="..\Common\uQueueEx.pas"/>
+    <File Path="CheckUpdateThread.pas"/>
+    <File Path="fmExeUpdateU.pas"/>
+    <File Path="fmExeUpdateU.dfm"/>
+    <File Path="fmMainU.pas"/>
+    <File Path="fmMainU.dfm"/>
+    <File Path="fmMT4UpdateU.pas"/>
+    <File Path="fmMT4UpdateU.dfm"/>
+    <File Path="uCtrls.pas"/>
+    <File Path="uLoginProcess.pas"/>
+    <File Path="uMDProcess.pas"/>
+    <File Path="uPacketProcess.pas"/>
+    <File Path="uPosDataProcess.pas"/>
+    <File Path="version.ini"/>
+    <File Path="uConfig.pas"/>
+    <File Path="uConfig.dfm"/>
+    <File Path="uBasketCommon.pas"/>
+    <File Path="uLoadSymbols.pas"/>
+    <File Path="symbols.ini"/>
+    <File Path="AlphaBasket.ini"/>
+    <File Path="uDataHandler.pas"/>
+  </ProjectSortOrder>
+</BorlandProject>
